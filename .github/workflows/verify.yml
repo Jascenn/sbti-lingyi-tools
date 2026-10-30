@@ -1,0 +1,27 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate static page
+        run: |
+          test -f index.html
+          test -f wrangler.toml
+          test -f README.md
+          grep -q "pages_build_output_dir" wrangler.toml
+
+      - name: Check whitespace
+        run: git diff --check
